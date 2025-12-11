@@ -24,8 +24,6 @@ body {
   font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   background: var(--bg);
   color: var(--fg);
-
-  /* background: #000; */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -141,6 +139,8 @@ header {
   transition: transform 0.2s, box-shadow 0.2s;
   background-color: var(--bg-color, #333);
   background-size: cover;
+  position: relative;
+  cursor: pointer;
 }
 
 .test-card.light {
@@ -151,6 +151,35 @@ header {
 .test-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.test-card::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: rgba(0, 0, 0, 0.92);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 300px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.test-card:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
 }
 
 /* Test Mode Views (discrete divs) */
@@ -194,8 +223,15 @@ header {
   backdrop-filter: blur(5px);
 }
 
-.test-mode-view:hover .test-exit-hint {
-  opacity: 1;
+.test-mode-view[data-active="true"] .test-exit-hint {
+  animation: hintFadeInOut 4s ease forwards;
+}
+
+@keyframes hintFadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* Custom Color & Gradient Controls */
@@ -313,6 +349,43 @@ header {
   margin-top: 16px;
 }
 
+/* Specific styling for Monitor Test custom buttons - fixed, high contrast color
+   These buttons should not follow the current --accent color since --accent is
+   updated by the color picker. Use a fixed, readable color with good contrast
+   on our dark UI for consistent action appearance. */
+.custom-color-controls .btn-primary,
+.custom-gradient-section .btn-primary {
+  background: #10B981; /* fixed action button color */
+  color: #ffffff;      /* readable on dark backgrounds */
+  border: 1px solid rgba(255,255,255,0.06);
+  min-width: 160px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.12);
+  text-transform: none;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.custom-color-controls .btn-primary:hover,
+.custom-gradient-section .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16,185,129,0.35);
+  background: #0ea472;
+}
+
+.custom-color-controls .btn-primary:active,
+.custom-gradient-section .btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.15);
+}
+
+.custom-color-controls .btn-primary:focus-visible,
+.custom-gradient-section .btn-primary:focus-visible {
+  outline: 2px solid rgba(16,185,129,0.3);
+  outline-offset: 2px;
+}
+
 /* Center the page content and limit max width for readability */
 main {
   max-width: 860px;
@@ -400,12 +473,6 @@ button {
   background: #1f2b46;
 }
 
-button.primary {
-  background: var(--accent);
-  border-color: #3c6fe0;
-  color: white;
-}
-
 .hint {
   color: var(--muted);
   font-size: 12px;
@@ -428,22 +495,12 @@ button.primary {
   background-color: var(--accent);
 }
 
-.swatch-rgb {
-  width: 35px;
-  height: 35px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background-color: var(--accent);
-  /* margin-left: 100px; */
-}
-
 .swatch-r {
   width: 35px;
   height: 35px;
   border-radius: 5px;
   border: 1px solid var(--border);
   background-color: var(--accent);
-  /* margin-left: 100px; */
 }
 
 .swatch-g {
@@ -452,7 +509,6 @@ button.primary {
   border-radius: 5px;
   border: 1px solid var(--border);
   background-color: var(--accent);
-  /* margin-left: 100px; */
 }
 
 .swatch-b {
@@ -461,16 +517,7 @@ button.primary {
   border-radius: 5px;
   border: 1px solid var(--border);
   background-color: var(--accent);
-  /* margin-left: 100px; */
 }
-
-.format-rgb {
-  width: 35px;
-  height: 35px;
- 
-  /* margin-left: 100px; */
-}
-
 
 .rgb-section {
   display: flex;
@@ -576,8 +623,7 @@ input[type="range"] {
 
 #rgb-text {
   margin-left: 2em;
-  /* margin-top: 2em; */
-  padding : 6px 8px;
+  padding: 6px 8px;
   box-sizing: border-box;
 }
 

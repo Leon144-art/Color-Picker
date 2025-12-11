@@ -17,211 +17,29 @@
     </nav>
   </header>
   <main>
-    <div id="view-picker" class="view-section active">
-      <section class="panel">
-        <h2>Quick Color Picker</h2>
-      <div class="row">
-        <input id="native-color" aria-label="Pick a color" type="color" value="#4f8cff" />
-        <div class="swatch" id="swatch" title="Selected color"></div>
-        <span class="code" id="color-text">#4f8cff</span>
-        <button id="copy">Copy</button>
-        <div class="blank-box"></div>
-      </div>
-      <div class="hint">Your last color is saved locally and restored on next open.</div>
-    </section>
-    <section class="panel">
-      <h2>RGB Color Values</h2>
-      <div class="rgb-row">
-        <div id="rgb-text" class="readouts">RGB(255, 255, 255)</div>
-        <div class="rgb-section">
-          <div class="rgb-item">
-            <span class="rgb-label">R:</span>
-            <div class="swatch-r"></div>
-          </div>
-          <div class="rgb-item">
-            <span class="rgb-label">G:</span>
-            <div class="swatch-g"></div>
-          </div>
-          <div class="rgb-item">
-            <span class="rgb-label">B:</span>
-            <div class="swatch-b"></div>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <section class="panel wheel-section">
-      <h2>HSV Color Wheel</h2>
-      <div class="wheel-wrap">
-        <canvas id="hsv-wheel" width="240" height="240"></canvas>
-        <div class="controls">
-          <div class="row">
-            <label for="hsv-value">Value (Brightness):</label>
-            <input id="hsv-value" type="range" min="0" max="100" value="100" />
-            <span id="hsv-v-text" class="code">V=100%</span>
-          </div>
-          <div class="readouts"><span id="hsv-hsv-text">HSV(0, 0%, 100%)</span></div>
-          <div class="hint">Drag on the wheel for <strong>Hue/Saturation</strong>, use slider for
-            <strong>Value</strong>.
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="panel wheel-section">
-      <h2>HSL Color Wheel</h2>
-      <div class="wheel-wrap">
-        <canvas id="hsl-wheel" width="240" height="240"></canvas>
-        <div class="controls">
-          <div class="row">
-            <label for="hsl-lightness">Lightness:</label>
-            <input id="hsl-lightness" type="range" min="0" max="100" value="50" />
-            <span id="hsl-l-text" class="code">L=50%</span>
-          </div>
-          <div class="readouts">
-            <span id="hsl-hsl-text">HSL(0, 0%, 50%)</span>
-          </div>
-          <div class="hint">Drag on the wheel for <strong>Hue/Saturation</strong>, use slider for
-            <strong>Lightness</strong>.
-          </div>
-        </div>
-      </div>
-    </section>
-    </div> <!-- End of view-picker -->
-
-    <div id="view-monitor-test" class="view-section">
-      <section class="panel">
-        <h2>Monitor Test Patterns</h2>
-        <p>Select a pattern to test your display. Click to enter fullscreen mode.</p>
-        
-        <h3>Solid Colors</h3>
-        <div class="test-grid">
-          <button class="test-card" data-test="solid" data-color="#ff0000" style="--bg-color: #ff0000;">
-            <span>Red</span>
-          </button>
-          <button class="test-card" data-test="solid" data-color="#00ff00" style="--bg-color: #00ff00;">
-            <span>Green</span>
-          </button>
-          <button class="test-card" data-test="solid" data-color="#0000ff" style="--bg-color: #0000ff;">
-            <span>Blue</span>
-          </button>
-          <button class="test-card light" data-test="solid" data-color="#ffffff" style="--bg-color: #ffffff;">
-            <span>White</span>
-          </button>
-          <button class="test-card" data-test="solid" data-color="#000000" style="--bg-color: #000000;">
-            <span>Black</span>
-          </button>
-          <button class="test-card" data-test="solid" data-color="#808080" style="--bg-color: #808080;">
-            <span>50% Gray</span>
-          </button>
-          <button class="test-card" data-test="solid" data-color="#ff00ff" style="--bg-color: #ff00ff;">
-            <span>Magenta</span>
-          </button>
-          <button class="test-card light" data-test="solid" data-color="#ffff00" style="--bg-color: #ffff00;">
-            <span>Yellow</span>
-          </button>
-          <button class="test-card light" data-test="solid" data-color="#00ffff" style="--bg-color: #00ffff;">
-            <span>Cyan</span>
-          </button>
-        </div>
-
-        <h3>Custom Color</h3>
-        <div class="custom-color-section">
-          <div class="custom-color-controls">
-            <input type="color" id="custom-test-color" value="#4f8cff" />
-            <input type="text" id="custom-test-hex" value="#4f8cff" maxlength="7" placeholder="#RRGGBB" />
-            <button id="launch-custom-color" class="btn-primary">Launch Custom Color</button>
-          </div>
-        </div>
-
-        <h3>Gradients & Scales</h3>
-        <div class="test-grid">
-           <button class="test-card" data-test="grayscale" style="background: linear-gradient(to right, #000, #fff);">
-            <span>Grayscale Ramp</span>
-          </button>
-           <button class="test-card" data-test="blacklevel" style="background: linear-gradient(to right, #000 0%, #111 100%);">
-            <span>Black Level</span>
-          </button>
-          <button class="test-card" data-test="rgb-gradient" style="background: linear-gradient(to right, #f00, #0f0, #00f);">
-            <span>RGB Gradient</span>
-          </button>
-        </div>
-
-        <h3>Custom Gradient</h3>
-        <div class="custom-gradient-section">
-          <div class="gradient-controls">
-            <div class="gradient-stop">
-              <label>Start Color:</label>
-              <input type="color" id="gradient-start" value="#000000" />
-            </div>
-            <div class="gradient-stop">
-              <label>End Color:</label>
-              <input type="color" id="gradient-end" value="#ffffff" />
-            </div>
-            <div class="gradient-direction">
-              <label>Direction:</label>
-              <select id="gradient-direction">
-                <option value="to right">Horizontal →</option>
-                <option value="to left">Horizontal ←</option>
-                <option value="to bottom">Vertical ↓</option>
-                <option value="to top">Vertical ↑</option>
-              </select>
-            </div>
-            <button id="launch-custom-gradient" class="btn-primary">Launch Custom Gradient</button>
-          </div>
-        </div>
-
-        <h3>Patterns</h3>
-        <div class="test-grid">
-          <button class="test-card" data-test="checkerboard" style="background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 50% / 40px 40px;">
-            <span>Checkerboard</span>
-          </button>
-          <button class="test-card" data-test="grid" style="background: repeating-linear-gradient(#000 0 1px, transparent 1px 20px), repeating-linear-gradient(90deg, #000 0 1px, #fff 1px 20px);">
-            <span>Grid</span>
-          </button>
-          <button class="test-card" data-test="color-bars" style="background: linear-gradient(to right, #fff 0% 14.28%, #ff0 14.28% 28.56%, #0ff 28.56% 42.84%, #0f0 42.84% 57.12%, #f0f 57.12% 71.4%, #f00 71.4% 85.68%, #00f 85.68% 100%);">
-            <span>Color Bars</span>
-          </button>
-          <button class="test-card" data-test="crosshatch" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, #666 10px, #666 11px), repeating-linear-gradient(-45deg, transparent, transparent 10px, #666 10px, #666 11px), #000;">
-            <span>Crosshatch</span>
-          </button>
-        </div>
-
-        <h3>Gray Steps</h3>
-        <div class="test-grid">
-          <button class="test-card" data-test="gray-steps-5" style="background: linear-gradient(to right, #000 0% 20%, #404040 20% 40%, #808080 40% 60%, #bfbfbf 60% 80%, #fff 80% 100%);">
-            <span>5 Steps</span>
-          </button>
-          <button class="test-card" data-test="gray-steps-10" style="background: linear-gradient(to right, #000 0% 10%, #1c1c1c 10% 20%, #383838 20% 30%, #555 30% 40%, #717171 40% 50%, #8e8e8e 50% 60%, #aaa 60% 70%, #c7c7c7 70% 80%, #e3e3e3 80% 90%, #fff 90% 100%);">
-            <span>10 Steps</span>
-          </button>
-          <button class="test-card" data-test="near-black-steps" style="background: linear-gradient(to right, #000 0% 12.5%, #020202 12.5% 25%, #040404 25% 37.5%, #080808 37.5% 50%, #101010 50% 62.5%, #181818 62.5% 75%, #202020 75% 87.5%, #282828 87.5% 100%);">
-            <span>Near Black</span>
-          </button>
-        </div>
-      </section>
-    </div>
+    <div id="view-picker" class="view-section active"></div>
+    <div id="view-monitor-test" class="view-section"></div>
   </main>
 
   <!-- Test Mode Views (discrete divs like color picker) -->
   <div id="test-solid-color" class="test-mode-view" data-active="false">
     <div class="test-content" id="test-solid-content"></div>
-    <div class="test-exit-hint">Click or press ESC to exit</div>
+    <div class="test-exit-hint">Press ESC to exit</div>
   </div>
 
   <div id="test-gradient" class="test-mode-view" data-active="false">
     <div class="test-content" id="test-gradient-content"></div>
-    <div class="test-exit-hint">Click or press ESC to exit</div>
+    <div class="test-exit-hint">Press ESC to exit</div>
   </div>
 
   <div id="test-pattern" class="test-mode-view" data-active="false">
     <div class="test-content" id="test-pattern-content"></div>
-    <div class="test-exit-hint">Click or press ESC to exit</div>
+    <div class="test-exit-hint">Press ESC to exit</div>
   </div>
 
   <div id="test-blacklevel" class="test-mode-view" data-active="false">
     <div class="test-content" id="test-blacklevel-content"></div>
-    <div class="test-exit-hint">Click or press ESC to exit</div>
+    <div class="test-exit-hint">Press ESC to exit</div>
   </div>
 
   <script type="module" src="./js/app.js"></script>

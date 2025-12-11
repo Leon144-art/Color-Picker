@@ -7,6 +7,7 @@ export class ColorWheel {
         this.slider = slider;
         this.textElements = textElements;
         this.onHexChange = callbacks.onHexChange;
+        this.colorInput = callbacks.colorInput;
 
         this.size = this.canvas.width;
         this.centerX = this.size / 2;
@@ -182,9 +183,9 @@ export class ColorWheel {
             this.onHexChange(hex, this.mode);
         }
 
-        try {
-            nativeColor.value = hex;
-        } catch (_) { }
+        if (this.colorInput) {
+            this.colorInput.value = hex;
+        }
 
         this.updateReadouts();
         this.draw();
