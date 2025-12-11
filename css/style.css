@@ -182,6 +182,11 @@ header {
   transform: translateX(-50%) translateY(-12px);
 }
 
+/* Hide tooltip for solid color tests (they don't have title attribute) */
+.test-card[data-test="solid"]::after {
+  display: none;
+}
+
 /* Test Mode Views (discrete divs) */
 .test-mode-view {
   position: fixed;
