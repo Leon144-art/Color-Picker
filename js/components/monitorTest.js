@@ -106,13 +106,13 @@ export class MonitorTestComponent {
       this.testGradientContent.style.background = 'linear-gradient(to right, #f00 0%, #0f0 50%, #00f 100%)';
       this.showTestView(this.testGradientView);
     } else if (testType === 'sharpness-grid') {
-      this.testPatternContent.style.background = 'repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 50% / 20px 20px';
+      this.resetPatternContent('repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 50% / 20px 20px');
       this.showTestView(this.testPatternView);
     } else if (testType === 'geometry-circles') {
       this.renderGeometryCircles();
       this.showTestView(this.testPatternView);
     } else if (testType === 'color-bars-smpte') {
-      this.testPatternContent.style.background = 'linear-gradient(to right, #c0c0c0 0% 14.28%, #c0c000 14.28% 28.56%, #00c0c0 28.56% 42.84%, #00c000 42.84% 57.12%, #c000c0 57.12% 71.4%, #c00000 71.4% 85.68%, #0000c0 85.68% 100%)';
+      this.resetPatternContent('linear-gradient(to right, #c0c0c0 0% 14.28%, #c0c000 14.28% 28.56%, #00c0c0 28.56% 42.84%, #00c000 42.84% 57.12%, #c000c0 57.12% 71.4%, #c00000 71.4% 85.68%, #0000c0 85.68% 100%)');
       this.showTestView(this.testPatternView);
     } else if (testType === 'uniformity-gray') {
       this.testSolidContent.style.background = '#808080';
@@ -179,9 +179,14 @@ export class MonitorTestComponent {
     this.testBlacklevelContent.appendChild(wrapper);
   }
 
-  renderGeometryCircles() {
+  resetPatternContent(background = '') {
+    if (!this.testPatternContent) return;
     this.testPatternContent.innerHTML = '';
-    this.testPatternContent.style.background = '#fff';
+    this.testPatternContent.style.background = background;
+  }
+
+  renderGeometryCircles() {
+    this.resetPatternContent('#fff');
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');

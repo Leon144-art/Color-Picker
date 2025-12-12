@@ -14,10 +14,14 @@
     <nav class="main-nav">
       <button id="nav-picker" class="nav-item active">Color Picker</button>
       <button id="nav-monitor" class="nav-item">Monitor Test</button>
+      <span class="nav-indicator" aria-hidden="true"></span>
     </nav>
   </header>
   <main>
-    <div id="view-picker" class="view-section active"></div>
+    <!-- Transition shell: keeps a single blurred frame during view switches -->
+    <div id="view-transition-shell" class="view-transition-shell" aria-hidden="true"></div>
+    
+    <div id="view-picker" class="view-section"></div>
     <div id="view-monitor-test" class="view-section"></div>
   </main>
 

@@ -6,6 +6,18 @@
   /* This one updates when setColor(hex) runs */
   --card: #0a0c107e;
   --border: #22242b;
+
+  /* Animation Variables */
+  --anim-duration-fast: 0.18s;
+  --anim-duration-normal: 0.38s;
+  --anim-duration-slow: 0.55s;
+  --anim-easing: ease;
+  --anim-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --anim-easing-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --anim-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --view-blur: 12px;
+  --view-scale: 0.97;
+  --view-panel-scale: 0.99;
 }
 
 * {
@@ -67,6 +79,8 @@ header {
   display: flex;
   gap: 20px;
   height: 100%;
+  position: relative;
+  align-items: center;
 }
 
 .nav-item {
@@ -92,29 +106,118 @@ header {
   color: var(--accent);
 }
 
-.nav-item.active::after {
-  content: '';
+.nav-indicator {
   position: absolute;
-  bottom: -1px;
+  bottom: 0;
   left: 0;
-  width: 100%;
   height: 2px;
+  width: 0;
   background: var(--accent);
+  border-radius: 999px;
+  transition:
+    transform var(--anim-duration-fast) var(--anim-easing-in-out),
+    width var(--anim-duration-fast) var(--anim-easing-in-out),
+    opacity var(--anim-duration-fast) var(--anim-easing);
+  opacity: 0.9;
 }
 
 /* Views */
 .view-section {
+  position: relative;
+  display: block;
+  --stack-gap: 16px;
+  --stack-gap-collapsed: 0px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  transition:
+    transform var(--anim-duration-normal) var(--anim-easing-in-out),
+    filter var(--anim-duration-normal) var(--anim-easing-in-out),
+    opacity var(--anim-duration-normal) var(--anim-easing-in-out);
+}
+
+.view-section.hidden {
   display: none;
 }
 
-.view-section.active {
-  display: block;
-  animation: fadeIn 0.3s ease;
+/* Entering state: starts invisible, positioned for smooth entry */
+.view-section.is-entering {
+  opacity: 0;
+  transform: scale(0.98);
+  filter: blur(var(--view-blur));
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Leaving state: fades out with blur */
+.view-section.is-leaving {
+  opacity: 0;
+  transform: scale(0.98);
+  filter: blur(var(--view-blur));
+  pointer-events: none;
+}
+
+/* View stack: the container that holds panels, gaps collapse during transition */
+.view-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap);
+  transition:
+    gap var(--anim-duration-normal) var(--anim-easing-in-out);
+}
+
+.view-section.is-leaving .view-stack,
+.view-section.is-entering .view-stack {
+  gap: var(--stack-gap-collapsed);
+}
+
+/* Panel transition: panels visually merge during view switch */
+.panel {
+  transition:
+    margin var(--anim-duration-normal) var(--anim-easing-in-out),
+    transform var(--anim-duration-normal) var(--anim-easing-in-out),
+    border-radius var(--anim-duration-normal) var(--anim-easing-in-out),
+    opacity var(--anim-duration-normal) var(--anim-easing-in-out),
+    background var(--anim-duration-normal) var(--anim-easing-in-out),
+    border-color var(--anim-duration-normal) var(--anim-easing-in-out),
+    box-shadow var(--anim-duration-normal) var(--anim-easing-in-out);
+}
+
+.view-section.is-leaving .panel,
+.view-section.is-entering .panel {
+  margin-bottom: 0 !important;
+  border-radius: 0;
+}
+
+/* First and last panels keep rounded corners on their outer edges */
+.view-section.is-leaving .view-stack > .panel:first-child,
+.view-section.is-entering .view-stack > .panel:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.view-section.is-leaving .view-stack > .panel:last-child,
+.view-section.is-entering .view-stack > .panel:last-child {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Panel content fades and blurs during transition */
+.view-section .panel > * {
+  transition:
+    opacity var(--anim-duration-fast) var(--anim-easing-in-out),
+    filter var(--anim-duration-fast) var(--anim-easing-in-out),
+    transform var(--anim-duration-fast) var(--anim-easing-in-out);
+}
+
+.view-section.is-leaving .panel > * {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.99);
+}
+
+.view-section.is-entering .panel > * {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.99);
 }
 
 /* Monitor Test Grid */
@@ -198,7 +301,7 @@ header {
   background: #000;
   display: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--anim-duration-normal) var(--anim-easing);
   visibility: hidden;
 }
 
@@ -226,19 +329,12 @@ header {
   font-size: 13px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity var(--anim-duration-normal) var(--anim-easing);
   backdrop-filter: blur(5px);
 }
 
 .test-mode-view[data-active="true"] .test-exit-hint {
-  animation: hintFadeInOut 4s ease forwards;
-}
-
-@keyframes hintFadeInOut {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { opacity: 0; }
+  animation: hintFadeInOut 4s var(--anim-easing) forwards;
 }
 
 /* Custom Color & Gradient Controls */
@@ -397,20 +493,74 @@ header {
 main {
   max-width: 860px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 16px 0;
+  position: relative;
+}
+
+/* Unified blurred frame during view switches (shown behind view content) */
+.view-transition-shell {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transform: scale(0.97);
+  transition:
+    opacity var(--anim-duration-normal) var(--anim-easing-in-out),
+    transform var(--anim-duration-normal) var(--anim-easing-in-out),
+    height var(--anim-duration-normal) var(--anim-easing-in-out),
+    top var(--anim-duration-normal) var(--anim-easing-in-out);
+}
+
+.view-transition-shell.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Ensure view content sits above the shell */
+.view-section {
+  z-index: 1;
+  position: relative;
+}
+
+/* While transitioning, visually merge multiple panels into one big shell */
+body.view-transitioning .view-section .panel {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Transition shell should NOT inherit .panel styles - it's purely for visual continuity */
+.view-transition-shell {
+  width: auto;
+  margin-bottom: 0;
 }
 
 /* Card container for our controls */
 .panel {
-  width: 860px;
+  width: 100%;
   padding: 16px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  margin-bottom: 2em;
+  margin-bottom: 0;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  /* 兼容 Safari 和 iOS Safari */
+  box-sizing: border-box;
 }
 
 .panel h2 {
@@ -526,20 +676,30 @@ button {
   background-color: var(--accent);
 }
 
-.rgb-section {
-  display: flex;
-  gap: 3em; 
-  margin-left: auto;
-  margin-right: 10em; 
-  align-items: center;
+/* ============================================
+   ANIMATIONS & KEYFRAMES
+   ============================================ */
+
+/* Page View Transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.rgb-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.8em;
+/* Test Hints */
+@keyframes hintFadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
+
 
 .rgb-label {
   font-size: 12px;
@@ -614,8 +774,19 @@ input[type="range"] {
   width: 150px;
 }
 
-.rgb-section{
+.rgb-section {
+  display: flex;
+  gap: 3em;
   margin-left: auto;
+  margin-right: 10em;
+  align-items: center;
+}
+
+.rgb-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8em;
 }
 
 #native-color {
