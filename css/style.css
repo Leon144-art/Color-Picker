@@ -510,28 +510,24 @@ main {
   display: none;
   opacity: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  transform: scale(0.97);
   transition:
     opacity var(--anim-duration-normal) var(--anim-easing-in-out),
-    transform var(--anim-duration-normal) var(--anim-easing-in-out),
     height var(--anim-duration-normal) var(--anim-easing-in-out),
     top var(--anim-duration-normal) var(--anim-easing-in-out);
 }
 
 .view-transition-shell.is-active {
   opacity: 1;
-  transform: scale(1);
 }
 
 /* Ensure view content sits above the shell */
 .view-section {
-  z-index: 1;
   position: relative;
 }
 

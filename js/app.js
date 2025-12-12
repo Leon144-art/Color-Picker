@@ -165,37 +165,46 @@ function switchView(target) {
     transitionTimer = null;
   }
   
-  // Phase 1: Show shell and start leaving animation (panels merge)
-  showTransitionShell(leaving);
-  leaving.classList.add('is-leaving');
+  // Scroll to top smoothly before transition to ensure all panels are visible
+  // This prevents misalignment when page is scrolled down
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   
-  // Phase 2: After a short delay, prepare entering view
+  // Small delay to let scroll start, then begin transition
+  const scrollDelay = window.scrollY > 100 ? 150 : 0;
+  
   setTimeout(() => {
-    // Prepare entering view (hidden but ready)
-    entering.classList.remove('hidden');
-    entering.classList.add('is-entering');
+    // Phase 1: Show shell and start leaving animation (panels merge)
+    showTransitionShell(leaving);
+    leaving.classList.add('is-leaving');
     
-    // Force layout so entering state applies
-    entering.getBoundingClientRect();
-    
-    // Update shell height to match entering view
-    updateShellForEnteringView(entering);
-    
-    // Phase 3: Start entering animation (panels unmerge)
-    requestAnimationFrame(() => {
-      entering.classList.remove('is-entering');
+    // Phase 2: After a short delay, prepare entering view
+    setTimeout(() => {
+      // Prepare entering view (hidden but ready)
+      entering.classList.remove('hidden');
+      entering.classList.add('is-entering');
       
-      // Hide leaving view
-      leaving.classList.remove('is-leaving');
-      leaving.classList.add('hidden');
-    });
-  }, VIEW_ANIM_MS * 0.4); // Overlap animations for smoother transition
-  
-  // Phase 4: Cleanup after full animation
-  transitionTimer = setTimeout(() => {
-    hideTransitionShell();
-    isTransitioning = false;
-  }, VIEW_ANIM_MS * 1.2);
+      // Force layout so entering state applies
+      entering.getBoundingClientRect();
+    
+      // Update shell height to match entering view
+      updateShellForEnteringView(entering);
+      
+      // Phase 3: Start entering animation (panels unmerge)
+      requestAnimationFrame(() => {
+        entering.classList.remove('is-entering');
+        
+        // Hide leaving view
+        leaving.classList.remove('is-leaving');
+        leaving.classList.add('hidden');
+      });
+    }, VIEW_ANIM_MS * 0.4); // Overlap animations for smoother transition
+    
+    // Phase 4: Cleanup after full animation
+    transitionTimer = setTimeout(() => {
+      hideTransitionShell();
+      isTransitioning = false;
+    }, VIEW_ANIM_MS * 1.2);
+  }, scrollDelay);
   
   activeView = target;
   setActiveNav(target);
