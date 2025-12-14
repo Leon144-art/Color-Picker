@@ -5,6 +5,7 @@
   --accent: #4f8cff;
   /* Updated to flat 40% opacity as requested */
   --card: rgba(10, 12, 16, 0.25);
+  --card_tranfer: rgba(10, 12, 16, 0.3);
   --border: #22242b;
 
   /* Animation Variables */
@@ -502,8 +503,8 @@ main {
   opacity: 0;
   pointer-events: none;
   z-index: -1;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--card_tranfer);
+  /* border: 1px solid var(--border); */
   border-radius: 12px;
   -webkit-backdrop-filter: blur(30px);
   backdrop-filter: blur(30px);
