@@ -10,7 +10,7 @@ const DEFAULTS = {
   proxyURL: 'https://corsproxy.io/?',
   ttlHours: 24,
   overlay:
-    'linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.5) 100%)',
+    'linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.72) 20%, rgba(0,0,0,0.72) 80%, rgba(0,0,0,0.7) 100%)',
   blur: 7,
   storageKey: 'colorAnalyser.wallpaper.cache',
 };

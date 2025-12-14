@@ -1,3 +1,4 @@
+
 import { ColorPickerComponent } from './components/colorPicker.js';
 import { MonitorTestComponent } from './components/monitorTest.js';
 import { initWallpaper } from './components/wallpaper.js';
@@ -35,7 +36,7 @@ let transitionTimer = null;
 
 /**
  * Calculate the bounding box that encompasses all panels in a view
- * Returns position relative to the main container
+ * Used primarily for positioning (top)
  */
 function getViewBoundingBox(viewEl) {
   const panels = viewEl.querySelectorAll('.panel');
@@ -49,7 +50,7 @@ function getViewBoundingBox(viewEl) {
   
   panels.forEach(panel => {
     const rect = panel.getBoundingClientRect();
-    // Calculate relative to main container, accounting for its padding
+    // Calculate relative to main container
     const relativeTop = rect.top - mainRect.top;
     const relativeBottom = rect.bottom - mainRect.top;
     minTop = Math.min(minTop, relativeTop);
@@ -63,6 +64,37 @@ function getViewBoundingBox(viewEl) {
 }
 
 /**
+ * Calculates the final expected height of a view when fully expanded.
+ * Sums up panel heights, their individual margins, and the flex-container gaps.
+ */
+function getExpandedHeight(viewEl) {
+  const panels = viewEl.querySelectorAll('.panel');
+  if (!panels.length) return 0;
+
+  let totalHeight = 0;
+  
+  panels.forEach(panel => {
+    // 1. Element Layout Height (Border + Padding + Content)
+    totalHeight += panel.offsetHeight;
+
+    // 2. Individual Panel Margins (e.g. .wheel-section has margin-top: 16px)
+    // Note: In a flex column, margins do not collapse; they add to the space.
+    // We read computed styles to catch any class-specific margins.
+    const style = getComputedStyle(panel);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    totalHeight += marginTop + marginBottom;
+  });
+
+  // 3. Flex Container Gaps (16px)
+  // We hardcode 16 here to match CSS --stack-gap.
+  const GAP_SIZE = 16;
+  const totalGaps = Math.max(0, panels.length - 1) * GAP_SIZE;
+
+  return totalHeight + totalGaps;
+}
+
+/**
  * Show the unified transition shell with smooth animation
  */
 function showTransitionShell(leavingView) {
@@ -71,7 +103,6 @@ function showTransitionShell(leavingView) {
   const bbox = getViewBoundingBox(leavingView);
   
   // Set initial size to match current view's panels
-  // bbox.top is already relative to main, so use it directly
   transitionShell.style.top = `${Math.round(bbox.top)}px`;
   transitionShell.style.height = `${Math.max(0, Math.round(bbox.height))}px`;
   
@@ -81,19 +112,6 @@ function showTransitionShell(leavingView) {
     transitionShell.classList.add('is-active');
     document.body.classList.add('view-transitioning');
   });
-}
-
-/**
- * Update shell height to match entering view
- */
-function updateShellForEnteringView(enteringView) {
-  if (!transitionShell) return;
-  
-  // Force layout calculation
-  enteringView.getBoundingClientRect();
-  
-  const bbox = getViewBoundingBox(enteringView);
-  transitionShell.style.height = `${Math.max(0, Math.round(bbox.height))}px`;
 }
 
 /**
@@ -166,30 +184,31 @@ function switchView(target) {
   }
   
   // Scroll to top smoothly before transition to ensure all panels are visible
-  // This prevents misalignment when page is scrolled down
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
-  // Small delay to let scroll start, then begin transition
+  // Small delay to let scroll start
   const scrollDelay = window.scrollY > 100 ? 150 : 0;
   
   setTimeout(() => {
-    // Phase 1: Show shell and start leaving animation (panels merge)
+    // Phase 1: Show shell and start leaving animation
     showTransitionShell(leaving);
     leaving.classList.add('is-leaving');
     
     // Phase 2: After a short delay, prepare entering view
     setTimeout(() => {
-      // Prepare entering view (hidden but ready)
+      // Prepare entering view
       entering.classList.remove('hidden');
       entering.classList.add('is-entering');
       
-      // Force layout so entering state applies
-      entering.getBoundingClientRect();
-    
-      // Update shell height to match entering view
-      updateShellForEnteringView(entering);
+      // Calculate the TRUE final height (summing heights + margins + gaps)
+      const trueHeight = getExpandedHeight(entering);
       
-      // Phase 3: Start entering animation (panels unmerge)
+      if (transitionShell) {
+        transitionShell.style.height = `${trueHeight}px`;
+        // Keep 'top' anchored to the leaving view's position to prevent jumping
+      }
+      
+      // Phase 3: Start entering animation
       requestAnimationFrame(() => {
         entering.classList.remove('is-entering');
         
@@ -197,9 +216,9 @@ function switchView(target) {
         leaving.classList.remove('is-leaving');
         leaving.classList.add('hidden');
       });
-    }, VIEW_ANIM_MS * 0.4); // Overlap animations for smoother transition
+    }, VIEW_ANIM_MS * 0.4);
     
-    // Phase 4: Cleanup after full animation
+    // Phase 4: Cleanup
     transitionTimer = setTimeout(() => {
       hideTransitionShell();
       isTransitioning = false;
@@ -220,7 +239,7 @@ setActiveNav(activeView);
 requestAnimationFrame(() => updateNavIndicator(activeView));
 window.addEventListener('resize', () => updateNavIndicator(activeView));
 
-// Expose spacing controls for quick tuning
+// Expose spacing controls
 window.viewSpacing = {
   setGap: setViewGap,
   setCollapsedGap: setViewCollapsedGap,

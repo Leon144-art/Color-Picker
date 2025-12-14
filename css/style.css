@@ -3,8 +3,8 @@
   --fg: #e7e7ea;
   --muted: #9aa0a6;
   --accent: #4f8cff;
-  /* This one updates when setColor(hex) runs */
-  --card: #0a0c107e;
+  /* Updated to flat 40% opacity as requested */
+  --card: rgba(10, 12, 16, 0.25);
   --border: #22242b;
 
   /* Animation Variables */
@@ -15,7 +15,7 @@
   --anim-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --anim-easing-out: cubic-bezier(0.0, 0, 0.2, 1);
   --anim-easing-in: cubic-bezier(0.4, 0, 1, 1);
-  --view-blur: 12px;
+  --view-blur: 0px; /* Removed blur */
   --view-scale: 0.97;
   --view-panel-scale: 0.99;
 }
@@ -41,7 +41,7 @@ body {
   background-attachment: fixed;
 }
 
-/* Overlay sits above wallpaper and can be tweaked via CSS vars */
+/* Overlay sits above wallpaper - Updated to flat 40% transparency */
 body::before {
   content: '';
   position: fixed;
@@ -49,11 +49,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--wallpaper-overlay, linear-gradient(to right,
-        rgba(0, 0, 0, 0.5) 0%,
-        rgba(0, 0, 0, 0.8) 20%,
-        rgba(0, 0, 0, 0.8) 80%,
-        rgba(0, 0, 0, 0.5) 100%));
+  background: var(--wallpaper-overlay, rgba(0, 0, 0, 0.4));
   z-index: -1;
   backdrop-filter: blur(var(--wallpaper-blur, 7px));
   -webkit-backdrop-filter: blur(var(--wallpaper-blur, 7px));
@@ -129,10 +125,9 @@ header {
   --stack-gap-collapsed: 0px;
   opacity: 1;
   transform: translateY(0) scale(1);
-  filter: blur(0);
+  /* filter: blur(0); Removed transition blur */
   transition:
     transform var(--anim-duration-normal) var(--anim-easing-in-out),
-    filter var(--anim-duration-normal) var(--anim-easing-in-out),
     opacity var(--anim-duration-normal) var(--anim-easing-in-out);
 }
 
@@ -144,14 +139,14 @@ header {
 .view-section.is-entering {
   opacity: 0;
   transform: scale(0.98);
-  filter: blur(var(--view-blur));
+  /* filter: blur(var(--view-blur)); Removed */
 }
 
-/* Leaving state: fades out with blur */
+/* Leaving state: fades out */
 .view-section.is-leaving {
   opacity: 0;
   transform: scale(0.98);
-  filter: blur(var(--view-blur));
+  /* filter: blur(var(--view-blur)); Removed */
   pointer-events: none;
 }
 
@@ -200,23 +195,22 @@ header {
   border-bottom-right-radius: 12px;
 }
 
-/* Panel content fades and blurs during transition */
+/* Panel content fades during transition - Removed blur */
 .view-section .panel > * {
   transition:
     opacity var(--anim-duration-fast) var(--anim-easing-in-out),
-    filter var(--anim-duration-fast) var(--anim-easing-in-out),
     transform var(--anim-duration-fast) var(--anim-easing-in-out);
 }
 
 .view-section.is-leaving .panel > * {
   opacity: 0;
-  filter: blur(6px);
+  /* filter: blur(6px); Removed */
   transform: scale(0.99);
 }
 
 .view-section.is-entering .panel > * {
   opacity: 0;
-  filter: blur(6px);
+  /* filter: blur(6px); Removed */
   transform: scale(0.99);
 }
 
@@ -452,10 +446,7 @@ header {
   margin-top: 16px;
 }
 
-/* Specific styling for Monitor Test custom buttons - fixed, high contrast color
-   These buttons should not follow the current --accent color since --accent is
-   updated by the color picker. Use a fixed, readable color with good contrast
-   on our dark UI for consistent action appearance. */
+/* Specific styling for Monitor Test custom buttons */
 .custom-color-controls .btn-primary,
 .custom-gradient-section .btn-primary {
   background: #10B981; /* fixed action button color */
@@ -489,7 +480,7 @@ header {
   outline-offset: 2px;
 }
 
-/* Center the page content and limit max width for readability */
+/* Center the page content */
 main {
   max-width: 860px;
   margin: 0 auto;
@@ -497,7 +488,7 @@ main {
   position: relative;
 }
 
-/* Unified blurred frame during view switches (shown behind view content) */
+/* Unified blurred frame during view switches */
 .view-transition-shell {
   position: absolute;
   top: 16px;
@@ -584,7 +575,7 @@ body.view-transitioning .view-section .panel {
   color: var(--fg);
 }
 
-/* Flex row that lets items wrap nicely on small screens */
+/* Flex row */
 .row {
   display: flex;
   gap: 8px;
@@ -703,7 +694,7 @@ button {
   font-weight: 500;
 }
 
-/* Simple readout background so the text stands out */
+/* Simple readout background */
 .code {
   padding: 6px 8px;
   background: #0e1014;
