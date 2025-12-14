@@ -505,8 +505,8 @@ main {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
   transition:
     opacity var(--anim-duration-normal) var(--anim-easing-in-out),
     height var(--anim-duration-normal) var(--anim-easing-in-out),
@@ -545,8 +545,8 @@ body.view-transitioning .view-section .panel {
   border: 1px solid var(--border);
   border-radius: 12px;
   margin-bottom: 0;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   box-sizing: border-box;
 }
 
